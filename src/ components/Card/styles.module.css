@@ -1,0 +1,47 @@
+.card,
+.back {
+  width: var(--card-width);
+  aspect-ratio: 2.8/3.5;
+  border-radius: 3px;
+  border: 1px solid black;
+  background-color: white;
+  position: relative;
+  display: grid;
+  place-content: center;
+}
+
+.value {
+  font-size: 1rem;
+}
+
+.suit {
+  font-size: 0.8rem;
+  line-height: 0.25;
+}
+
+.top {
+  position: absolute;
+  left: 0.2rem;
+}
+
+.bottom {
+  position: absolute;
+  bottom: 0;
+  right: 0.2rem;
+  transform: rotate(180deg);
+}
+
+.black {
+  color: black;
+}
+
+.red {
+  color: red;
+}
+
+.back {
+  width: 87px;
+  aspect-ratio: 2.8/3.7;
+  background-color: #ccc;
+  border-radius: 1px;
+}

@@ -1,0 +1,46 @@
+.pile {
+  position: relative;
+  display: flex;
+  counter-reset: pile;
+  height: fit-content;
+}
+
+.base {
+  width: 100px;
+  aspect-ratio: 2.8/3.5;
+  border-radius: 3px;
+  border: 1px solid white;
+}
+
+.pile > div:not(.base) {
+  position: absolute;
+  --offset: calc(var(--count) * 1rem);
+}
+
+.right {
+  flex-direction: row;
+}
+
+.left {
+  flex-direction: row-reverse;
+}
+
+.down {
+  flex-direction: column;
+}
+
+.left > div {
+  right: var(--offset);
+}
+
+.down > div {
+  top: var(--offset);
+}
+
+.right > div {
+  left: var(--offset);
+}
+
+.card:focus {
+  outline: 2px solid #646cff;
+}

@@ -80,6 +80,8 @@ export const Pile = forwardRef<HTMLDivElement, PileProps>(
             className={S.card}
             style={{ "--count": `${i % max}` } as CSSProperties}
             onDragStart={handleStart}
+            onFocus={handleStart}
+            onBlur={handleEnd}
             onDragEnd={handleEnd}
           >
             <Card card={c} key={`card-${i}`} />

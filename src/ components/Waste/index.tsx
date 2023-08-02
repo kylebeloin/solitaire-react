@@ -11,7 +11,7 @@ export const Waste: FC = () => {
   const { cards, setCards } = useHand();
   const _ref = useMemo(() => getPile(waste.id)?.ref, [getPile, waste.id]);
 
-  const handleMouseDown = (e: unknown, ref: unknown) => {
+  const handleActionStart = (e: unknown, ref: unknown) => {
     const _cards = waste?.Cards?.[waste.Cards.length - 1] ?? null;
     if (_cards) {
       setCards([_cards]);
@@ -19,7 +19,7 @@ export const Waste: FC = () => {
     }
   };
 
-  const handleMouseUp = (
+  const handleActionEnd = (
     e: unknown,
     ref: React.ForwardedRef<HTMLDivElement>
   ) => {
@@ -40,12 +40,12 @@ export const Waste: FC = () => {
   }, [waste, addPile, getPile]);
 
   return (
-    <div className={S.stock}>
+    <div className={S.stock} onFocus={(e) => handleActionStart(e, _ref)}>
       <Pile
         id={waste.id}
         direction="left"
-        actionStart={handleMouseDown}
-        actionEnd={handleMouseUp}
+        actionStart={handleActionStart}
+        actionEnd={handleActionEnd}
         max={3}
         ref={_ref}
       />

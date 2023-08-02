@@ -25,7 +25,29 @@ export const Tableau: FC<TableauProps> = ({ number }) => {
     [getPile, tableau?.id]
   );
 
-  const handleAction = (e: unknown) => {
+  /**
+   *
+   *
+   */
+  const handleFocus = (e: unknown, ref: unknown) => {
+    if (tableau) {
+      if (cards.length === 0) {
+        const _cards = tableau.FaceUp();
+        if (_cards) {
+          setCards(_cards);
+          updatePile();
+        }
+      } else {
+        if (tableau.CanAdd(cards)) {
+          tableau.Add(cards);
+          setCards([]);
+          updatePile();
+        }
+      }
+    }
+  };
+
+  const handleDrop = (e: unknown) => {
     if (tableau) {
       if (tableau.CanAdd(cards)) {
         tableau.Add(cards);
@@ -83,7 +105,10 @@ export const Tableau: FC<TableauProps> = ({ number }) => {
             e.preventDefault();
             e.stopPropagation();
           }}
-          onDrop={handleAction}
+          onClick={(e) => {
+            handleFocus(e, _ref);
+          }}
+          onDrop={handleDrop}
         >
           <Pile
             id={tableau.id}

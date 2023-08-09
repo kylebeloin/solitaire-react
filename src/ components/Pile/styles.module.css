@@ -44,3 +44,28 @@
 .card:focus {
   outline: 2px solid #646cff;
 }
+
+
+.card:hover, .card:hover + .card {
+  cursor: pointer;
+  animation: hover 0.2s ease-in-out forwards
+}
+
+
+.card:hover {
+  cursor: pointer;
+  animation: hover 0.2s ease-in-out forwards
+}
+
+@keyframes hover {
+  0% {
+    transform: translateY(0);
+    scale: 1;
+  }
+
+  100% {
+    transform: translateY(-5px);
+    scale: 1.05;
+  }
+  
+}

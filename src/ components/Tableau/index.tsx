@@ -2,7 +2,7 @@ import { FC, useState, useEffect, useMemo } from "react";
 import { usePile, useHand } from "../../hooks";
 import { PileType } from "../../models";
 import { TableauModel } from "../../models/Tableau/TableauModel";
-import { IPileAction, Pile, action } from "../Pile";
+import { IPileAction, Pile } from "../Pile";
 
 interface TableauProps {
   /**
@@ -26,7 +26,7 @@ export const Tableau: FC<TableauProps> = ({ number }) => {
    *
    *
    */
-  const handleClick: IPileAction = (e, clickedRef) => {
+  const handleClick: IPileAction = (_, clickedRef) => {
     if (clickedRef?.current && tableau) {
       updateHand({ cards: tableau.FaceUp(), ref: clickedRef });
       updatePile(tableau.id, tableau);
@@ -42,7 +42,7 @@ export const Tableau: FC<TableauProps> = ({ number }) => {
     }
   };
 
-  const handleDrop: IPileAction = (e) => {
+  const handleDrop: IPileAction = () => {
     if (tableau && tableau.CanAdd(cards)) {
       tableau.Add(cards);
       updateHand({ cards: [], ref: undefined });
@@ -50,14 +50,14 @@ export const Tableau: FC<TableauProps> = ({ number }) => {
     }
   };
 
-  const handleDragStart: IPileAction = (e, ref) => {
+  const handleDragStart: IPileAction = (_, ref) => {
     if (ref?.current && tableau) {
       updateHand({ cards: tableau.FaceUp(), ref });
       updatePile(tableau.id, tableau);
     }
   };
 
-  const handleDragEnd: IPileAction = (e, ref) => {
+  const handleDragEnd: IPileAction = (_, ref) => {
     if (ref?.current && tableau) {
       /**
        * If hand is empty, cards have been moved to another pile.

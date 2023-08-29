@@ -1,5 +1,5 @@
 import S from "./styles.module.css";
-import { useState, useMemo, useEffect, FC, CSSProperties } from "react";
+import { useState, useMemo, useEffect, FC } from "react";
 
 import { IPileAction, Pile } from "../Pile";
 import { usePile, useHand } from "../../hooks";
@@ -19,7 +19,7 @@ export const Foundation: FC<FoundationProps> = ({ suit }) => {
     [getPile, foundation.id]
   );
 
-  const handleAction: IPileAction = (e, ref) => {
+  const handleAction: IPileAction = () => {
     if (cards.length && foundation.CanAdd(cards[cards.length - 1])) {
       foundation.Add([cards.pop()!]);
       updateHand({ cards: cards, ref: undefined });

@@ -11,7 +11,7 @@ export const Waste: FC = () => {
   const { cards, updateHand } = useHand();
   const wasteRef = useMemo(() => getPile(waste.id)?.ref, [getPile, waste.id]);
 
-  const handleActionStart: IPileAction = (e, ref) => {
+  const handleActionStart: IPileAction = (_, ref) => {
     let card = waste?.Cards?.[waste.Cards.length - 1] ?? [];
     if (ref?.current) {
       updateHand({ cards: [card], ref });
@@ -19,7 +19,7 @@ export const Waste: FC = () => {
     }
   };
 
-  const handleActionEnd: IPileAction = (e, ref) => {
+  const handleActionEnd: IPileAction = (_, ref) => {
     if (!(typeof ref === "function") && ref?.current) {
       if (cards.length == 0) {
         waste.Pick(1);

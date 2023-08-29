@@ -1,7 +1,7 @@
 import S from "./styles.module.css";
 import { useDrag } from "../../hooks/useDrag";
 
-import { FC, useRef } from "react";
+import { FC } from "react";
 
 import { Stock } from "../Stock";
 import { Foundation } from "../Foundation";

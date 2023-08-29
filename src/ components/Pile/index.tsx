@@ -57,7 +57,7 @@ export const Pile = forwardRef<HTMLDivElement, PileProps>(
   ) => {
     const { getPile } = usePile();
 
-    const { updateDrag, childRef } = useDrag();
+    const { childRef } = useDrag();
 
     const [pile, setPile] = useState<PileContext | null>(null);
 

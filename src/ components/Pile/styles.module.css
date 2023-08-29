@@ -6,9 +6,11 @@
 }
 
 .revealed {
+  z-index: 1;
 }
 
 .card {
+  z-index: 1;
 }
 
 .base {
@@ -49,6 +51,7 @@
 }
 
 .overlap {
+  z-index: 1;
 }
 
 .card:focus {

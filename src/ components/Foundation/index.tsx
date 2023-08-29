@@ -1,9 +1,9 @@
 import S from "./styles.module.css";
-import { useState, useMemo, useEffect, FC } from "react";
+import { useState, useMemo, useEffect, FC, CSSProperties } from "react";
 
-import { Pile } from "../Pile";
+import { IAction, Pile, action } from "../Pile";
 import { usePile, useHand } from "../../hooks";
-import { FoundationModel, SuitValue } from "../../models";
+import { FoundationModel, SuitValue, Suits } from "../../models";
 
 interface FoundationProps {
   suit: SuitValue;
@@ -12,24 +12,21 @@ interface FoundationProps {
 export const Foundation: FC<FoundationProps> = ({ suit }) => {
   const [foundation] = useState(new FoundationModel(suit));
   const { addPile, getPile, updatePile } = usePile();
-  const { setCards, pickCard } = useHand();
+  const { cards, updateHand } = useHand();
 
   const _ref = useMemo(
     () => getPile(foundation.id)?.ref,
     [getPile, foundation.id]
   );
 
-  const handleAction = (e: unknown) => {
-    const _card = pickCard()?.[0];
-    if (_card) {
-      if (foundation.CanAdd(_card)) {
-        foundation.Add([_card]);
-        setCards([]);
-      } else {
-        setCards([_card]);
-      }
+  const handleAction: IAction = (e, ref) => {
+    console.log();
+    if (cards.length && foundation.CanAdd(cards[cards.length - 1])) {
+      console.log(cards);
+      foundation.Add([cards.pop()!]);
+      updateHand({ cards: cards, ref: undefined });
     }
-    updatePile();
+    updatePile(foundation.id, foundation);
   };
 
   useEffect(() => {
@@ -39,21 +36,15 @@ export const Foundation: FC<FoundationProps> = ({ suit }) => {
   }, [foundation, addPile, getPile]);
 
   return (
-    <div
-      key={"foundation"}
-      className={S.foundation}
-      onDragOver={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      }}
-      onDrop={handleAction}
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        handleAction(e);
-      }}
-    >
-      <Pile id={foundation.id} direction="overlap" ref={_ref} />
+    <div key={`foundation-${foundation.id}`} className={S.foundation}>
+      <div className={S.suit}>{Suits[suit].name}</div>
+      <Pile
+        id={foundation.id}
+        handleClick={handleAction}
+        handleDrop={handleAction}
+        direction="overlap"
+        ref={_ref}
+      />
     </div>
   );
 };

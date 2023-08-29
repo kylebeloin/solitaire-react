@@ -19,14 +19,14 @@ export const Board: FC = () => {
       <PileProvider>
         <div className={S.board}>
           <div className={S.row}>
+            <div className={S.hand}>
+              <Stock />
+              <Waste />
+            </div>
             <div className={S.foundations}>
               {SUITS.map((suit: SuitValue) => (
-                <Foundation key={suit} suit={suit} />
+                <Foundation key={`${suit}-foundation`} suit={suit} />
               ))}
-            </div>
-            <div className={S.hand}>
-              <Waste />
-              <Stock />
             </div>
           </div>
           <div className={S.row}>

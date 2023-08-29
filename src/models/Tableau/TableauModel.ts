@@ -4,31 +4,39 @@ import type { ITableauModel } from "./ITableauModel";
 export class TableauModel extends PileModel implements ITableauModel {
   constructor(cards: CardModel[]) {
     super([], PileType.Tableau);
+    this.type = PileType.Tableau;
     this.Deal(cards);
   }
 
   public Deal(cards: CardModel[]): void {
-    console.log("dealing cards", cards);
     this.Add(cards);
     this.Cards[this.Cards.length - 1].Flip();
   }
 
-  public FaceUp(): CardModel[] {
+  /**
+   * Finds the index of faceup cards, and returns the cards from that index
+   * @returns
+   */
+  public FaceUp(): Array<CardModel> {
     return this.Cards.filter((card) => card.Revealed);
   }
 
   public Pick(number: number, flip?: boolean): CardModel[] {
     const card = super.Pick(number, flip);
-    if (this.Cards.every((card) => !card.Revealed)) {
+    /**
+     * If every card is face down and there is more than one card left, flip the last card
+     */
+    if (this.Cards.every((card) => !card.Revealed) && this.Cards.length > 0) {
       this.Cards[this.Cards.length - 1]?.Flip();
     }
     return card;
   }
 
   public CanAdd(card: CardModel[]): boolean {
-    const firstCard = card[0];
+    if (card.length === 0) return true;
+    let firstCard = card[0];
     if (this.Cards.length === 0) return firstCard.Rank == 13;
-    const lastCard = this.Cards[this.Cards.length - 1];
+    let lastCard = this.Cards[this.Cards.length - 1];
 
     return (
       parseInt(lastCard.Suit.Suit.toString()) % 2 !=

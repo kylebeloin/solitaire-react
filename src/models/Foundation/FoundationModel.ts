@@ -7,6 +7,7 @@ export class FoundationModel extends PileModel implements IFoundationModel {
   constructor(suit: SuitValue) {
     super([], PileType.Foundation);
     this.Suit = suit;
+    this.type = PileType.Foundation;
   }
 
   public IsComplete() {

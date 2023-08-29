@@ -2,34 +2,35 @@ import S from "./styles.module.css";
 import { useState, useMemo, useEffect, FC } from "react";
 import { usePile, useHand } from "../../hooks";
 
-import { Pile } from "../Pile";
+import { Pile, action } from "../Pile";
 import { PileModel, PileType } from "../../models";
 
 export const Waste: FC = () => {
   const [waste] = useState(new PileModel([], PileType.Waste));
   const { addPile, getPile, updatePile } = usePile();
-  const { cards, setCards } = useHand();
-  const _ref = useMemo(() => getPile(waste.id)?.ref, [getPile, waste.id]);
+  const { cards, updateHand } = useHand();
+  const wasteRef = useMemo(() => getPile(waste.id)?.ref, [getPile, waste.id]);
 
-  const handleActionStart = (e: unknown, ref: unknown) => {
-    const _cards = waste?.Cards?.[waste.Cards.length - 1] ?? null;
-    if (_cards) {
-      setCards([_cards]);
-      updatePile();
+  const handleActionStart = (
+    e: action,
+    ref: React.MutableRefObject<HTMLDivElement | null>
+  ) => {
+    let card = waste?.Cards?.[waste.Cards.length - 1] ?? [];
+    if (ref?.current) {
+      updateHand({ cards: [card], ref });
+      updatePile(waste.id, waste);
     }
   };
 
   const handleActionEnd = (
-    e: unknown,
+    e: action | Event,
     ref: React.ForwardedRef<HTMLDivElement>
   ) => {
-    if (!(typeof ref === "function")) {
-      if (ref?.current) {
-        if (cards.length == 0) {
-          waste.Pick(1);
-        }
-        updatePile();
+    if (!(typeof ref === "function") && ref?.current) {
+      if (cards.length == 0) {
+        waste.Pick(1);
       }
+      updatePile(waste.id, waste);
     }
   };
 
@@ -40,14 +41,15 @@ export const Waste: FC = () => {
   }, [waste, addPile, getPile]);
 
   return (
-    <div className={S.stock} onFocus={(e) => handleActionStart(e, _ref)}>
+    <div className={S.waste}>
       <Pile
         id={waste.id}
-        direction="left"
+        direction="right"
         actionStart={handleActionStart}
         actionEnd={handleActionEnd}
+        draggable={true}
         max={3}
-        ref={_ref}
+        ref={wasteRef}
       />
     </div>
   );

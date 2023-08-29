@@ -10,6 +10,7 @@ import {
   DragEvent,
   FocusEvent,
   ForwardedRef,
+  MutableRefObject,
 } from "react";
 import type { PileContext } from "../../hooks";
 import { CardModel } from "../../models";
@@ -18,14 +19,21 @@ import { Card } from "../Card";
 
 type direction = "left" | "right" | "overlap" | "down";
 
-type action = MouseEvent | DragEvent | FocusEvent;
+export type action = MouseEvent | DragEvent | FocusEvent;
+
+export interface IAction {
+  (e: action, ref: MutableRefObject<HTMLDivElement | null>): void;
+}
 
 interface PileProps {
   direction: direction;
   max?: number;
   id: string;
-  actionStart?: (e: action, ref: ForwardedRef<HTMLDivElement>) => void;
-  actionEnd?: (e: action | Event, ref: ForwardedRef<HTMLDivElement>) => void;
+  actionStart?: IAction;
+  actionEnd?: IAction;
+  handleClick?: IAction;
+  handleDrop?: IAction;
+  draggable?: boolean;
 }
 
 /**
@@ -35,20 +43,45 @@ interface PileProps {
  */
 export const Pile = forwardRef<HTMLDivElement, PileProps>(
   (
-    { direction, id, actionStart = () => {}, actionEnd = () => {}, max = 1 },
+    {
+      direction,
+      id,
+      actionStart = () => {},
+      actionEnd = () => {},
+      handleClick = () => {},
+      handleDrop = () => {},
+      max = 1,
+      draggable = false,
+    },
     ref
   ) => {
-    const { getPile, updatePile } = usePile();
+    const { getPile } = usePile();
     const [pile, setPile] = useState<PileContext | null>(null);
-    const _cards = useMemo(
-      () => pile?.pile?.Cards ?? ([] as CardModel[]),
+    const cards = useMemo(
+      () => pile?.model?.Cards ?? ([] as CardModel[]),
       [pile]
+    );
+
+    const onClick = useCallback(
+      (event: action) => {
+        if (!(typeof ref === "function") && ref?.current)
+          handleClick(event, ref);
+      },
+      [handleClick, ref]
+    );
+
+    const onDrop = useCallback(
+      (event: action) => {
+        if (!(typeof ref === "function") && ref?.current)
+          handleDrop(event, ref);
+      },
+      [handleDrop, ref]
     );
 
     const handleStart = useCallback(
       (event: action) => {
-        event.stopPropagation();
-        actionStart(event, ref);
+        if (!(typeof ref === "function") && ref?.current)
+          actionStart(event, ref);
       },
       [actionStart, ref]
     );
@@ -57,8 +90,7 @@ export const Pile = forwardRef<HTMLDivElement, PileProps>(
       (event: action) => {
         event.stopPropagation();
         event.preventDefault();
-        actionEnd(event, ref);
-        updatePile();
+        if (!(typeof ref === "function") && ref?.current) actionEnd(event, ref);
       },
       [actionEnd, ref]
     );
@@ -70,21 +102,33 @@ export const Pile = forwardRef<HTMLDivElement, PileProps>(
     }, [id, getPile]);
 
     return (
-      <div className={`${S.pile} ${S[direction]}`} ref={ref}>
-        <div className={S.base} />
-        {_cards.map((c, i) => (
+      <div
+        id={pile?.model.id}
+        className={`${S.pile} ${S[direction]}`}
+        ref={ref}
+        itemType={`${pile?.model.type}`}
+        onDragOver={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+        onDrop={onDrop}
+      >
+        <div
+          className={S.base}
+          onClick={(e) => (cards.length ? null : onClick(e))}
+        />
+        {cards.map((card, i) => (
           <div
             tabIndex={0}
-            draggable={true}
+            draggable={draggable}
             key={`card-${i}-container`}
-            className={S.card}
+            className={`${S.card}${card.Revealed ? ` ${S.revealed}` : ""}`}
             style={{ "--count": `${i % max}` } as CSSProperties}
             onDragStart={handleStart}
-            onFocus={handleStart}
-            onBlur={handleEnd}
             onDragEnd={handleEnd}
+            onClick={onClick}
           >
-            <Card card={c} key={`card-${i}`} />
+            <Card card={card} key={`${pile?.model.id}-card-${i}`} />
           </div>
         ))}
       </div>

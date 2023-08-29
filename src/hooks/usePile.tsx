@@ -9,7 +9,7 @@ import {
 import { PileModel, PileType } from "../models";
 
 export type PileContext = {
-  pile: PileModel;
+  model: PileModel;
   ref: React.RefObject<HTMLDivElement>;
 };
 
@@ -17,7 +17,7 @@ interface PileContextProps {
   piles: PileContext[];
   addPile: (pile?: PileModel) => string;
   getPile: (key: string | PileType) => PileContext | undefined;
-  updatePile: () => void;
+  updatePile: (key: string, pile: PileModel) => void;
 }
 
 interface PileProviderProps {
@@ -38,7 +38,7 @@ const usePileContext = (number: number = 1) => {
   const addPile = useCallback(
     (pile = new PileModel()): string => {
       const ref = createRef<HTMLDivElement>();
-      setPiles([...piles, { pile, ref: ref }]);
+      setPiles([...piles, { model: pile, ref: ref }]);
       return pile.id;
     },
     [piles]
@@ -50,11 +50,18 @@ const usePileContext = (number: number = 1) => {
    * @returns
    */
   const getPile = (key: string | PileType) => {
-    return piles.find((p) => p.pile.id === key || p.pile.type === key);
+    return piles.find(
+      (pile) => pile.model.id === key || pile.model.type === key
+    );
   };
 
-  const updatePile = () => {
-    setPiles([...piles]);
+  const updatePile = (key: string, model: PileModel) => {
+    let index = piles.findIndex((pile) => pile.model.id === key);
+    if (index !== -1) {
+      let _piles = [...piles];
+      _piles[index].model = model;
+      setPiles(_piles);
+    }
   };
 
   return { piles, addPile, getPile, updatePile };

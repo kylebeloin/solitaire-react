@@ -10,6 +10,7 @@
   aspect-ratio: 2.8/3.5;
   border-radius: 3px;
   border: 1px solid white;
+  cursor: pointer;
 }
 
 .pile > div:not(.base) {
@@ -42,19 +43,16 @@
 }
 
 .card:focus {
-  outline: 2px solid #646cff;
+  outline: 2px solid white;
 }
 
-
-.card:hover, .card:hover + .card {
+.card.revealed:last-child:hover {
   cursor: pointer;
-  animation: hover 0.2s ease-in-out forwards
+  animation: hover 0.2s ease-in-out forwards;
 }
-
 
 .card:hover {
   cursor: pointer;
-  animation: hover 0.2s ease-in-out forwards
 }
 
 @keyframes hover {
@@ -67,5 +65,4 @@
     transform: translateY(-5px);
     scale: 1.05;
   }
-  
 }

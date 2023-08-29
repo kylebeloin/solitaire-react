@@ -14,32 +14,43 @@ export const Stock: FC = () => {
    * and place it on the waste pile.
    * @returns
    */
-  const handleClick = async () => {
+  const handleClick = () => {
+    console.log(deck);
     if (deck) {
-      const card = await deck.Draw(3);
+      const card = deck.Draw(3);
       const waste = getPile(PileType.Waste);
       if (waste) {
         if (card.length > 0) {
-          waste.pile.Add(card);
+          waste.model.Add(card);
+          updatePile(waste.model.id, waste.model);
         } else {
-          deck.Add(waste.pile.Pick(waste.pile.Cards.length, true));
+          deck.Add(waste.model.Pick(waste.model.Cards.length, true).reverse());
+          deck.Flip(deck);
+          updatePile(deck.id, deck);
         }
-        updatePile();
       }
     }
   };
 
   useEffect(() => {
     if (!getPile(deck?.id ?? "") && !deck) {
-      const _deck = new DeckModel();
-      addPile(_deck);
-      setDeck(_deck);
+      setDeck(new DeckModel());
+    } else if (deck && !getPile(deck.id)) {
+      addPile(deck);
     }
   }, [deck, addPile, getPile]);
 
   return (
-    <div className={S.stock} onClick={handleClick}>
-      {deck && <Pile id={deck.id} direction="overlap" ref={ref} />}
+    <div className={S.stock}>
+      {deck && (
+        <Pile
+          id={deck.id}
+          handleClick={handleClick}
+          direction="overlap"
+          ref={ref}
+          draggable={true}
+        />
+      )}
     </div>
   );
 };

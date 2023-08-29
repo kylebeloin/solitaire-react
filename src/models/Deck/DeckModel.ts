@@ -9,15 +9,22 @@ export class DeckModel extends PileModel implements IDeckModel {
   constructor() {
     super([], PileType.Stock);
     // Lets make create an async function that will create a deck of cards
-
     this.Create();
   }
 
-  public async Draw(count: number = 1): Promise<CardModel[]> {
+  public Draw(count: number = 1): CardModel[] {
     return this.Pick(count, true);
   }
 
-  public async Shuffle(): Promise<void> {
+  public Pick(number: number, flip?: boolean): CardModel[] {
+    const cards = super.Pick(number);
+    if (flip) {
+      cards.forEach((card) => card.Flip());
+    }
+    return cards;
+  }
+
+  public Shuffle(): void {
     for (let i = this.Cards.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * i);
       const temp = this.Cards[i];
@@ -26,7 +33,7 @@ export class DeckModel extends PileModel implements IDeckModel {
     }
   }
 
-  public async Create(): Promise<void> {
+  public Create(): void {
     for (const suit of SUITS) {
       for (const rank of RANKS) {
         this.Add([new CardModel(rank, suit)]);

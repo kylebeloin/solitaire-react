@@ -1,41 +1,41 @@
 import { IPileModel } from "./IPileModel";
 import { PileType } from "./PileType";
+import { Pile } from ".";
 import { CardModel } from "../Card";
 import uuid4 from "uuid4";
 
-export class PileModel implements IPileModel {
-  public _cards: CardModel[] = [];
+export class PileModel extends Pile implements IPileModel {
+  private _cards: Array<CardModel> = [];
   public id: string = uuid4();
   public type: PileType = PileType.None;
   public created: boolean = false;
 
-  constructor(cards: CardModel[] = [], type: PileType = PileType.None) {
+  constructor(cards: Array<CardModel> = [], type: PileType = PileType.None) {
+    super();
     this.type = type;
     this._cards = cards;
   }
 
-  get Cards(): CardModel[] {
+  get Cards(): Array<CardModel> {
     return this._cards;
   }
 
-  set Cards(cards: CardModel[]) {
+  set Cards(cards: Array<CardModel>) {
     this._cards = cards;
   }
 
-  public Add(card: CardModel[]): void {
-    this._cards.push(...card);
+  public Add(card: Array<CardModel> | undefined): void {
+    if (card) this._cards.push(...card);
   }
 
+  /**
+   * @description Picks a number of cards from the pile
+   * @param number
+   * @param flip
+   * @returns {CardModel}
+   */
   public Pick(number: number, flip: boolean = false): CardModel[] {
-    const picked = [];
-    for (let i = 0; i < number; i++) {
-      const card = this._cards.pop();
-
-      if (card) {
-        picked.push(flip ? card.Flip() : card);
-      }
-    }
-    return picked;
+    return this.Cards.splice(this.Cards.length - number, number);
   }
 }
 

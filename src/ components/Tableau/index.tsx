@@ -1,8 +1,8 @@
 import { FC, useState, useEffect, useMemo } from "react";
 import { usePile, useHand } from "../../hooks";
-import { PileType, DeckModel } from "../../models";
+import { PileType } from "../../models";
 import { TableauModel } from "../../models/Tableau/TableauModel";
-import { Pile } from "../Pile";
+import { IAction, Pile, action } from "../Pile";
 
 interface TableauProps {
   /**
@@ -13,11 +13,8 @@ interface TableauProps {
 
 export const Tableau: FC<TableauProps> = ({ number }) => {
   const { addPile, getPile, updatePile } = usePile();
-  const { cards, setCards } = useHand();
-  const deck = useMemo(
-    () => getPile(PileType.Stock)?.pile as DeckModel,
-    [getPile]
-  );
+  const { cards, ref, updateHand } = useHand();
+
   const [tableau, setTableau] = useState<TableauModel | null>(null);
 
   const _ref = useMemo(
@@ -29,42 +26,43 @@ export const Tableau: FC<TableauProps> = ({ number }) => {
    *
    *
    */
-  const handleFocus = (e: unknown, ref: unknown) => {
-    if (tableau) {
-      if (cards.length === 0) {
-        const _cards = tableau.FaceUp();
-        if (_cards) {
-          setCards(_cards);
-          updatePile();
-        }
-      } else {
-        if (tableau.CanAdd(cards)) {
-          tableau.Add(cards);
-          setCards([]);
-          updatePile();
+  const handleClick: IAction = (e, ref_) => {
+    if (!(typeof ref_ === "function") && ref_?.current && tableau) {
+      updateHand({ cards: tableau.FaceUp(), ref: ref_ });
+      updatePile(tableau.id, tableau);
+
+      if (
+        tableau.CanAdd(cards) &&
+        !(typeof ref === "function") &&
+        ref?.current
+      ) {
+        const pile = getPile(ref.current.id);
+        if (pile) {
+          tableau.Add(pile.model.Pick(cards.length));
+          updateHand({ cards: [], ref: undefined });
+          updatePile(tableau.id, tableau);
         }
       }
     }
   };
 
-  const handleDrop = (e: unknown) => {
-    if (tableau) {
+  const handleDrop = (e: action) => {
+    if (!(typeof ref === "function") && tableau) {
       if (tableau.CanAdd(cards)) {
         tableau.Add(cards);
-        setCards([]);
-        updatePile();
+        updateHand({ cards: [], ref: undefined });
+        updatePile(tableau.id, tableau);
       }
     }
   };
 
-  const handleDragStart = (e: unknown, ref: unknown) => {
-    if (tableau) {
-      const _cards = tableau.FaceUp();
-      // If we have cards, set them to the hand.
-      if (_cards) {
-        setCards(_cards);
-        updatePile();
-      }
+  const handleDragStart = (
+    e: unknown,
+    ref: React.MutableRefObject<HTMLDivElement | null>
+  ) => {
+    if (ref?.current && tableau) {
+      updateHand({ cards: tableau.FaceUp(), ref });
+      updatePile(tableau.id, tableau);
     }
   };
 
@@ -79,15 +77,17 @@ export const Tableau: FC<TableauProps> = ({ number }) => {
          */
         if (cards.length == 0) {
           tableau.Pick(tableau.FaceUp().length);
-          setCards([]);
+          updateHand({ cards: [], ref: undefined });
         }
-        updatePile();
+        updatePile(tableau.id, tableau);
       }
     }
   };
 
   useEffect(() => {
     // If we have a deck and no tableau, create a tableau from the deck.
+    const deck = getPile(PileType.Stock)?.model;
+    console.log(deck);
     if (!tableau && deck) {
       setTableau(new TableauModel(deck.Pick(number, false)));
     }
@@ -95,30 +95,22 @@ export const Tableau: FC<TableauProps> = ({ number }) => {
     else if (tableau && !getPile(tableau.id)) {
       addPile(tableau);
     }
-  }, [deck, number, addPile, tableau]);
+  }, [getPile, addPile, tableau]);
 
   return (
     <>
       {tableau && (
-        <div
-          onDragOver={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-          onClick={(e) => {
-            handleFocus(e, _ref);
-          }}
-          onDrop={handleDrop}
-        >
-          <Pile
-            id={tableau.id}
-            direction="down"
-            actionStart={handleDragStart}
-            actionEnd={handleDragEnd}
-            max={tableau.Cards.length}
-            ref={_ref}
-          />
-        </div>
+        <Pile
+          id={tableau.id}
+          direction="down"
+          draggable={true}
+          actionStart={handleDragStart}
+          actionEnd={handleDragEnd}
+          handleClick={handleClick}
+          handleDrop={handleDrop}
+          max={tableau.Cards.length}
+          ref={_ref}
+        />
       )}
     </>
   );

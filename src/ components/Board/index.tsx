@@ -1,6 +1,7 @@
 import S from "./styles.module.css";
+import { useDrag } from "../../hooks/useDrag";
 
-import { FC } from "react";
+import { FC, useRef } from "react";
 
 import { Stock } from "../Stock";
 import { Foundation } from "../Foundation";
@@ -14,10 +15,12 @@ const SUITS = Object.keys(Suits) as unknown as SuitValue[];
 const TABLEAUS = [1, 2, 3, 4, 5, 6, 7];
 
 export const Board: FC = () => {
+  const { parentRef } = useDrag();
+
   return (
     <HandProvider>
       <PileProvider>
-        <div className={S.board}>
+        <div className={S.board} ref={parentRef}>
           <div className={S.row}>
             <div className={S.hand}>
               <Stock />

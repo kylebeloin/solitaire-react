@@ -9,10 +9,10 @@ import {
   MouseEvent,
   DragEvent,
   FocusEvent,
-  ForwardedRef,
   MutableRefObject,
 } from "react";
 import type { PileContext } from "../../hooks";
+import { useDrag } from "../../hooks/useDrag";
 import { CardModel } from "../../models";
 import { usePile } from "../../hooks";
 import { Card } from "../Card";
@@ -21,7 +21,7 @@ type direction = "left" | "right" | "overlap" | "down";
 
 export type action = MouseEvent | DragEvent | FocusEvent;
 
-export interface IAction {
+export interface IPileAction {
   (e: action, ref: MutableRefObject<HTMLDivElement | null>): void;
 }
 
@@ -29,10 +29,10 @@ interface PileProps {
   direction: direction;
   max?: number;
   id: string;
-  actionStart?: IAction;
-  actionEnd?: IAction;
-  handleClick?: IAction;
-  handleDrop?: IAction;
+  actionStart?: IPileAction;
+  actionEnd?: IPileAction;
+  handleClick?: IPileAction;
+  handleDrop?: IPileAction;
   draggable?: boolean;
 }
 
@@ -56,7 +56,11 @@ export const Pile = forwardRef<HTMLDivElement, PileProps>(
     ref
   ) => {
     const { getPile } = usePile();
+
+    const { updateDrag, childRef } = useDrag();
+
     const [pile, setPile] = useState<PileContext | null>(null);
+
     const cards = useMemo(
       () => pile?.model?.Cards ?? ([] as CardModel[]),
       [pile]
@@ -95,6 +99,15 @@ export const Pile = forwardRef<HTMLDivElement, PileProps>(
       [actionEnd, ref]
     );
 
+    const setCardRef = useCallback(
+      (el: HTMLDivElement | null) => {
+        if (el && childRef && childRef?.ref && "current" in childRef.ref) {
+          return childRef.ref;
+        }
+      },
+      [childRef?.ref]
+    );
+
     useEffect(() => {
       if (id && getPile(id) && !pile) {
         setPile(getPile(id) as PileContext);
@@ -127,6 +140,7 @@ export const Pile = forwardRef<HTMLDivElement, PileProps>(
             onDragStart={handleStart}
             onDragEnd={handleEnd}
             onClick={onClick}
+            ref={(el) => setCardRef(el)}
           >
             <Card card={card} key={`${pile?.model.id}-card-${i}`} />
           </div>

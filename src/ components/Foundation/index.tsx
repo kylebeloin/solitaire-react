@@ -1,7 +1,7 @@
 import S from "./styles.module.css";
 import { useState, useMemo, useEffect, FC, CSSProperties } from "react";
 
-import { IAction, Pile, action } from "../Pile";
+import { IPileAction, Pile } from "../Pile";
 import { usePile, useHand } from "../../hooks";
 import { FoundationModel, SuitValue, Suits } from "../../models";
 
@@ -14,15 +14,13 @@ export const Foundation: FC<FoundationProps> = ({ suit }) => {
   const { addPile, getPile, updatePile } = usePile();
   const { cards, updateHand } = useHand();
 
-  const _ref = useMemo(
+  const foundationRef = useMemo(
     () => getPile(foundation.id)?.ref,
     [getPile, foundation.id]
   );
 
-  const handleAction: IAction = (e, ref) => {
-    console.log();
+  const handleAction: IPileAction = (e, ref) => {
     if (cards.length && foundation.CanAdd(cards[cards.length - 1])) {
-      console.log(cards);
       foundation.Add([cards.pop()!]);
       updateHand({ cards: cards, ref: undefined });
     }
@@ -43,7 +41,7 @@ export const Foundation: FC<FoundationProps> = ({ suit }) => {
         handleClick={handleAction}
         handleDrop={handleAction}
         direction="overlap"
-        ref={_ref}
+        ref={foundationRef}
       />
     </div>
   );

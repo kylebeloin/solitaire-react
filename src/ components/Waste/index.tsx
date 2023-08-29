@@ -2,7 +2,7 @@ import S from "./styles.module.css";
 import { useState, useMemo, useEffect, FC } from "react";
 import { usePile, useHand } from "../../hooks";
 
-import { Pile, action } from "../Pile";
+import { Pile, IPileAction } from "../Pile";
 import { PileModel, PileType } from "../../models";
 
 export const Waste: FC = () => {
@@ -11,10 +11,7 @@ export const Waste: FC = () => {
   const { cards, updateHand } = useHand();
   const wasteRef = useMemo(() => getPile(waste.id)?.ref, [getPile, waste.id]);
 
-  const handleActionStart = (
-    e: action,
-    ref: React.MutableRefObject<HTMLDivElement | null>
-  ) => {
+  const handleActionStart: IPileAction = (e, ref) => {
     let card = waste?.Cards?.[waste.Cards.length - 1] ?? [];
     if (ref?.current) {
       updateHand({ cards: [card], ref });
@@ -22,10 +19,7 @@ export const Waste: FC = () => {
     }
   };
 
-  const handleActionEnd = (
-    e: action | Event,
-    ref: React.ForwardedRef<HTMLDivElement>
-  ) => {
+  const handleActionEnd: IPileAction = (e, ref) => {
     if (!(typeof ref === "function") && ref?.current) {
       if (cards.length == 0) {
         waste.Pick(1);

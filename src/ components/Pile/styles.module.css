@@ -5,6 +5,12 @@
   height: fit-content;
 }
 
+.revealed {
+}
+
+.card {
+}
+
 .base {
   width: 100px;
   aspect-ratio: 2.8/3.5;
@@ -42,17 +48,15 @@
   left: var(--offset);
 }
 
+.overlap {
+}
+
 .card:focus {
   outline: 2px solid white;
 }
 
-.card.revealed:last-child:hover {
-  cursor: pointer;
-  animation: hover 0.2s ease-in-out forwards;
-}
-
 .card:hover {
-  cursor: pointer;
+  cursor: grab;
 }
 
 @keyframes hover {

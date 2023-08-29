@@ -7,15 +7,16 @@ import { PileType, DeckModel } from "../../models";
 export const Stock: FC = () => {
   const [deck, setDeck] = useState<DeckModel | null>(null);
   const { addPile, getPile, updatePile } = usePile();
-  const ref = useMemo(() => getPile(deck?.id ?? "")?.ref, [getPile, deck?.id]);
+  const deckRef = useMemo(
+    () => getPile(deck?.id ?? "")?.ref,
+    [getPile, deck?.id]
+  );
 
   /**
    * When the stock is clicked, we want to draw a card from the stock
    * and place it on the waste pile.
-   * @returns
    */
   const handleClick = () => {
-    console.log(deck);
     if (deck) {
       const card = deck.Draw(3);
       const waste = getPile(PileType.Waste);
@@ -47,7 +48,7 @@ export const Stock: FC = () => {
           id={deck.id}
           handleClick={handleClick}
           direction="overlap"
-          ref={ref}
+          ref={deckRef}
           draggable={true}
         />
       )}

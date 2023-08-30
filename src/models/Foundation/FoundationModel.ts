@@ -16,7 +16,7 @@ export class FoundationModel extends PileModel implements IFoundationModel {
 
   public CanAdd(card: CardModel) {
     if (this.Cards.length === 0) {
-      return card.Rank == 1;
+      return card.Rank == 1 && card.Suit.Suit === this.Suit;
     }
     const topCard = this.Cards[this.Cards.length - 1];
     return (

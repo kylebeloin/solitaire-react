@@ -26,6 +26,7 @@ export interface IPileAction {
 }
 
 interface PileProps {
+  className?: string;
   direction: direction;
   max?: number;
   id: string;
@@ -46,6 +47,7 @@ export const Pile = forwardRef<HTMLDivElement, PileProps>(
     {
       direction,
       id,
+      className = "",
       actionStart = () => {},
       actionEnd = () => {},
       handleClick = () => {},
@@ -117,7 +119,7 @@ export const Pile = forwardRef<HTMLDivElement, PileProps>(
     return (
       <div
         id={pile?.model.id}
-        className={`${S.pile} ${S[direction]}`}
+        className={`${S.pile} ${S[direction]} ${className}`}
         ref={ref}
         itemType={`${pile?.model.type}`}
         onDragOver={(e) => {

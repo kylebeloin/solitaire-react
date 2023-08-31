@@ -24,8 +24,17 @@ export class PileModel extends Pile implements IPileModel {
     this._cards = cards;
   }
 
-  public Add(card: Array<CardModel> | undefined): void {
+  public Add(card: Array<CardModel> | undefined): PileModel {
     if (card) this._cards.push(...card);
+    return this;
+  }
+
+  /**
+   * @description Flips all cards on model, calling the static method Flip on the Pile model.
+   */
+  public Flip(): PileModel {
+    super.Flip(this);
+    return this;
   }
 
   /**
@@ -34,7 +43,7 @@ export class PileModel extends Pile implements IPileModel {
    * @param flip
    * @returns {CardModel}
    */
-  public Pick(number: number, flip: boolean = false): CardModel[] {
+  public Pick(number: number): CardModel[] {
     return this.Cards.splice(this.Cards.length - number, number);
   }
 }

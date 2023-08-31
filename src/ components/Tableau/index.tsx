@@ -3,6 +3,7 @@ import { usePile, useHand } from "../../hooks";
 import { PileType } from "../../models";
 import { TableauModel } from "../../models/Tableau/TableauModel";
 import { IPileAction, Pile } from "../Pile";
+import S from "./styles.module.css";
 
 interface TableauProps {
   /**
@@ -74,7 +75,7 @@ export const Tableau: FC<TableauProps> = ({ number }) => {
     // If we have a deck and no tableau, create a tableau from the deck.
     const deck = getPile(PileType.Stock)?.model;
     if (!tableau && deck) {
-      setTableau(new TableauModel(deck.Pick(number, false)));
+      setTableau(new TableauModel(deck.Pick(number)));
     }
     // if tableau is set and we don't have a pile, add the pile.
     else if (tableau && !getPile(tableau.id)) {
@@ -87,6 +88,7 @@ export const Tableau: FC<TableauProps> = ({ number }) => {
       {tableau && (
         <Pile
           id={tableau.id}
+          className={S.tableau}
           direction="down"
           draggable={true}
           actionStart={handleDragStart}

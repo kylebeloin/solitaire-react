@@ -25,8 +25,7 @@ export const Stock: FC = () => {
           waste.model.Add(card);
           updatePile(waste.model.id, waste.model);
         } else {
-          deck.Add(waste.model.Pick(waste.model.Cards.length, true).reverse());
-          deck.Flip(deck);
+          deck.Add(waste.model.Pick(waste.model.Cards.length).reverse()).Flip();
           updatePile(deck.id, deck);
         }
       }
@@ -46,10 +45,11 @@ export const Stock: FC = () => {
       {deck && (
         <Pile
           id={deck.id}
+          className={S.stock}
           handleClick={handleClick}
           direction="overlap"
           ref={deckRef}
-          draggable={true}
+          draggable={false}
         />
       )}
     </div>

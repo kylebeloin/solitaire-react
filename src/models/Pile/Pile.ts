@@ -1,6 +1,6 @@
-import type { IPileModel } from ".";
+import type { IPileModel, IPile } from ".";
 
-abstract class Pile {
+abstract class Pile implements IPile {
   /**
    * @description Flips all cards passed in as a parameter.
    * @param pile

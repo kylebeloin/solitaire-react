@@ -1,0 +1,7 @@
+.tableau:hover {
+  cursor: grab;
+}
+
+.tableau[aria-grabbed="true"] {
+  cursor: grabbing;
+}

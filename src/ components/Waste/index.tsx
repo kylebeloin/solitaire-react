@@ -38,7 +38,7 @@ export const Waste: FC = () => {
     <div className={S.waste}>
       <Pile
         id={waste.id}
-        direction="right"
+        direction="overlap"
         actionStart={handleActionStart}
         actionEnd={handleActionEnd}
         draggable={true}

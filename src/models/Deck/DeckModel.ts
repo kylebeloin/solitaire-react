@@ -13,14 +13,8 @@ export class DeckModel extends PileModel implements IDeckModel {
   }
 
   public Draw(count: number = 1): CardModel[] {
-    return this.Pick(count, true);
-  }
-
-  public Pick(number: number, flip?: boolean): CardModel[] {
-    const cards = super.Pick(number);
-    if (flip) {
-      cards.forEach((card) => card.Flip());
-    }
+    const cards = this.Pick(count);
+    cards.forEach((card) => card.Flip());
     return cards;
   }
 

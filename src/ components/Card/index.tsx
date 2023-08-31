@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { CardArt } from "./CardArt";
 import S from "./styles.module.css";
 
 import { CardModel } from "../../models";
@@ -16,6 +17,9 @@ export const Card: FC<CardProps> = ({ card, style }) => {
           <div className={S.top}>
             <div className={`${S.value}`}>{card.Name}</div>
             <div className={`${S.suit}`}>{card.Suit.Icon}</div>
+          </div>
+          <div className={S.middle}>
+            <CardArt card={card} />
           </div>
           <div className={S.bottom}>
             <div className={`${S.value}`}>{card.Name}</div>

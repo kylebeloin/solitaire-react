@@ -60,7 +60,6 @@ export const Tableau: FC<TableauProps> = ({ number }) => {
 
   const handleDragEnd: IPileAction = (_, ref) => {
     if (ref?.current && tableau) {
-      console.log(tableau.Cards.length, cards.length);
       /**
        * If hand is empty, cards have been moved to another pile.
        */

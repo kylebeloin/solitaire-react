@@ -60,11 +60,12 @@ export const Tableau: FC<TableauProps> = ({ number }) => {
 
   const handleDragEnd: IPileAction = (_, ref) => {
     if (ref?.current && tableau) {
+      console.log(tableau.Cards.length, cards.length);
       /**
        * If hand is empty, cards have been moved to another pile.
        */
-      if (cards.length == 0) {
-        tableau.Pick(tableau.FaceUp().length);
+      if (cards.length < tableau.FaceUp().length) {
+        tableau.Pick(tableau.FaceUp().length - cards.length);
         updateHand({ cards: [], ref: undefined });
       }
       updatePile(tableau.id, tableau);

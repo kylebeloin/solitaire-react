@@ -21,8 +21,8 @@ export class TableauModel extends PileModel implements ITableauModel {
     return this.Cards.filter((card) => card.Revealed);
   }
 
-  public Pick(number: number, flip?: boolean): CardModel[] {
-    const card = super.Pick(number, flip);
+  public Pick(number: number): CardModel[] {
+    const card = super.Pick(number);
     /**
      * If every card is face down and there is more than one card left, flip the last card
      */

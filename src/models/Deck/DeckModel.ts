@@ -33,6 +33,7 @@ export class DeckModel extends PileModel implements IDeckModel {
         this.Add([new CardModel(rank, suit)]);
       }
     }
+    this.Shuffle();
   }
 }
 
